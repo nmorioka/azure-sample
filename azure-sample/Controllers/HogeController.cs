@@ -7,31 +7,31 @@ using System.Web.Http;
 
 namespace azure_sample.Controllers
 {
-    public class ValuesController : ApiController
+    public class HogeController : ApiController
     {
-        // GET api/values
+        // GET api/hoge
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value3" };
+            return new string[] { "hoge1", "hoge2" };
         }
 
-        // GET api/values/5
+        // GET api/hoge/5
         public string Get(int id)
         {
-            return "value";
+            return "hoge";
         }
 
-        // POST api/values
+        // POST api/hoge
         public void Post([FromBody]string value)
         {
         }
 
-        // PUT api/values/5
+        // PUT api/hoge/5
         public void Put(int id, [FromBody]string value)
         {
         }
 
-        // DELETE api/values/5
+        // DELETE api/hoges/5
         public void Delete(int id)
         {
         }

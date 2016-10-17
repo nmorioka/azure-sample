@@ -10,7 +10,7 @@ namespace azure_sample.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Title = "Home Page";
+            ViewBag.Title = "APIサンプルHome";
 
             return View();
         }
