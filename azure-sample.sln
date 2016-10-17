@@ -5,6 +5,10 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "azure-sample", "azure-sample\azure-sample.csproj", "{88791619-7048-44F9-9B07-98CE6619AF9F}"
 EndProject
+Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "AzureCloudService1", "AzureCloudService1\AzureCloudService1.ccproj", "{69A76A84-E968-47FA-BB9E-9B878F8F6B2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkerRoleWithSBQueue1", "WorkerRoleWithSBQueue1\WorkerRoleWithSBQueue1.csproj", "{AC78E4A7-F17C-422A-BB02-C9C6F51CDFC0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{88791619-7048-44F9-9B07-98CE6619AF9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88791619-7048-44F9-9B07-98CE6619AF9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88791619-7048-44F9-9B07-98CE6619AF9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69A76A84-E968-47FA-BB9E-9B878F8F6B2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69A76A84-E968-47FA-BB9E-9B878F8F6B2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69A76A84-E968-47FA-BB9E-9B878F8F6B2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69A76A84-E968-47FA-BB9E-9B878F8F6B2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC78E4A7-F17C-422A-BB02-C9C6F51CDFC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC78E4A7-F17C-422A-BB02-C9C6F51CDFC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC78E4A7-F17C-422A-BB02-C9C6F51CDFC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC78E4A7-F17C-422A-BB02-C9C6F51CDFC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
