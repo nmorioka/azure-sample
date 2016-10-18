@@ -65,8 +65,28 @@ namespace azure_sample.Controllers
         }
 
         // POST api/hoge
-        public void Post([FromBody]string value)
+        public async Task<HttpResponseMessage> Post(bool overwrite = false)
         {
+            Console.WriteLine("write...");
+
+            var tempPath = Path.GetTempPath();
+            var provider = new MultipartFormDataStreamProvider(tempPath);
+
+            await this.Request.Content.ReadAsMultipartAsync(provider);
+
+            foreach (var file in provider.FileData)
+            {
+                // アップロードファイル名の取得
+                var fileName = file.Headers.ContentDisposition.FileName;
+                fileName = fileName.StartsWith("\"") || fileName.StartsWith("'") ? fileName.Substring(1, fileName.Length - 1) : fileName;
+                fileName = fileName.EndsWith("\"") || fileName.EndsWith("'") ? fileName.Substring(0, fileName.Length - 1) : fileName;
+                fileName = Path.GetFileName(fileName);
+
+                // ファイルの移動
+                File.Move(file.LocalFileName, Path.Combine("C:\\", fileName));
+            }
+
+            return this.Request.CreateResponse(HttpStatusCode.OK);
         }
 
         // PUT api/hoge/5
