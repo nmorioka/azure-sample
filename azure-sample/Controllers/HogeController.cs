@@ -55,10 +55,14 @@ namespace azure_sample.Controllers
                 fileName = fileName.EndsWith("\"") || fileName.EndsWith("'") ? fileName.Substring(0, fileName.Length - 1) : fileName;
                 fileName = Path.GetFileName(fileName);
 
+                // ファイル名は乱数を入れておく
+                Guid g = System.Guid.NewGuid();
+                string pass = g.ToString("N").Substring(0, 15);
+
                 // ファイルの移動
                 //                File.Move(file.LocalFileName, Path.Combine("C:\\temp\\", fileName));
                 BlobModel blobModel = new BlobModel();
-                blobModel.upload(fileName, file.LocalFileName);
+                blobModel.upload(pass, file.LocalFileName);
             }
 
             return this.Request.CreateResponse(HttpStatusCode.OK);
