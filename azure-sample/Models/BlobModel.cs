@@ -19,7 +19,7 @@ namespace azure_sample.Models
             //
         }
 
-        public void hoge(string imagePathName)
+        public void upload(string fileName, string imagePathName)
         {
             // Retrieve storage account information from connection string
             // How to create a storage connection string - http://msdn.microsoft.com/en-us/library/azure/ee758697.aspx
@@ -50,7 +50,7 @@ namespace azure_sample.Models
 
             // Upload a BlockBlob to the newly created container
             Console.WriteLine("2. Uploading BlockBlob");
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(imagePathName);
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileName);
             blockBlob.UploadFromFile(imagePathName);
         }
 

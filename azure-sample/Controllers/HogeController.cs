@@ -26,7 +26,7 @@ namespace azure_sample.Controllers
             const string ImageToUpload = "c:\\hoge.png";
 
             BlobModel blobModel = new BlobModel();
-            blobModel.hoge(ImageToUpload);
+            blobModel.upload(ImageToUpload, ImageToUpload);
 
             return new string[] { "hoge1", "hoge2" };
         }
@@ -56,7 +56,9 @@ namespace azure_sample.Controllers
                 fileName = Path.GetFileName(fileName);
 
                 // ファイルの移動
-                File.Move(file.LocalFileName, Path.Combine("C:\\temp\\", fileName));
+                //                File.Move(file.LocalFileName, Path.Combine("C:\\temp\\", fileName));
+                BlobModel blobModel = new BlobModel();
+                blobModel.upload(fileName, file.LocalFileName);
             }
 
             return this.Request.CreateResponse(HttpStatusCode.OK);
