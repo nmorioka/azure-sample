@@ -16,7 +16,7 @@ namespace azure_sample.Controllers
     using System.Linq;
     using System.Threading.Tasks;
 
-    using azure_sample.Models;
+    using Models;
 
     public class HogeController : ApiController
     {
@@ -50,19 +50,22 @@ namespace azure_sample.Controllers
             foreach (var file in provider.FileData)
             {
                 // アップロードファイル名の取得
-                var fileName = file.Headers.ContentDisposition.FileName;
-                fileName = fileName.StartsWith("\"") || fileName.StartsWith("'") ? fileName.Substring(1, fileName.Length - 1) : fileName;
-                fileName = fileName.EndsWith("\"") || fileName.EndsWith("'") ? fileName.Substring(0, fileName.Length - 1) : fileName;
-                fileName = Path.GetFileName(fileName);
+                // var fileName = file.Headers.ContentDisposition.FileName;
+                // fileName = fileName.StartsWith("\"") || fileName.StartsWith("'") ? fileName.Substring(1, fileName.Length - 1) : fileName;
+                // fileName = fileName.EndsWith("\"") || fileName.EndsWith("'") ? fileName.Substring(0, fileName.Length - 1) : fileName;
+                // fileName = Path.GetFileName(fileName);
 
                 // ファイル名は乱数を入れておく
                 Guid g = System.Guid.NewGuid();
                 string pass = g.ToString("N").Substring(0, 15);
 
                 // ファイルの移動
-                //                File.Move(file.LocalFileName, Path.Combine("C:\\temp\\", fileName));
+                // File.Move(file.LocalFileName, Path.Combine("C:\\temp\\", fileName));
                 BlobModel blobModel = new BlobModel();
                 blobModel.upload(pass, file.LocalFileName);
+
+                InputImageModel inputImageModel = new InputImageModel();
+                inputImageModel.CrateAsync(pass);
             }
 
             return this.Request.CreateResponse(HttpStatusCode.OK);
