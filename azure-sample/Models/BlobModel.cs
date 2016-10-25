@@ -13,6 +13,9 @@ namespace azure_sample.Models
 
     public class BlobModel
     {
+        private static CloudBlobContainer container;
+
+
         public BlobModel()
         {
             //
@@ -20,7 +23,7 @@ namespace azure_sample.Models
             //
         }
 
-        public void upload(string fileName, string imagePathName)
+        public static void init()
         {
             // Retrieve storage account information from connection string
             // How to create a storage connection string - http://msdn.microsoft.com/en-us/library/azure/ee758697.aspx
@@ -30,7 +33,7 @@ namespace azure_sample.Models
             CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
 
             // Create a container for organizing blobs within the storage account.
-            CloudBlobContainer container = blobClient.GetContainerReference("democontainerblockblob");
+            container = blobClient.GetContainerReference("democontainerblockblob");
             try
             {
                 container.CreateIfNotExists();
@@ -40,44 +43,23 @@ namespace azure_sample.Models
                 Console.WriteLine("If you are running with the default configuration please make sure you have started the storage emulator. Press the Windows key and type Azure Storage to select and run it from the list of applications - then restart the sample.");
                 throw;
             }
+        }
 
-            // To view the uploaded blob in a browser, you have two options. The first option is to use a Shared Access Signature (SAS) token to delegate 
-            // access to the resource. See the documentation links at the top for more information on SAS. The second approach is to set permissions 
-            // to allow public access to blobs in this container. Uncomment the line below to use this approach. Then you can view the image 
-            // using: https://[InsertYourStorageAccountNameHere].blob.core.windows.net/democontainer/HelloWorld.png
-            // await container.SetPermissionsAsync(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
+        public static void upload(string fileName, string imagePathName)
+        {
 
             // Upload a BlockBlob to the newly created container
             CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileName);
             blockBlob.UploadFromFile(imagePathName);
         }
 
-        public void download(string fileName, Stream stream)
+        public static void download(string fileName, Stream stream)
         {
-            // How to create a storage connection string - http://msdn.microsoft.com/en-us/library/azure/ee758697.aspx
-            CloudStorageAccount storageAccount = CreateStorageAccountFromConnectionString(CloudConfigurationManager.GetSetting("StorageConnectionString"));
-
-            // Create a blob client for interacting with the blob service.
-            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-
-            // Create a container for organizing blobs within the storage account.
-            CloudBlobContainer container = blobClient.GetContainerReference("democontainerblockblob");
-            try
-            {
-                container.CreateIfNotExists();
-            }
-            catch (StorageException)
-            {
-                Console.WriteLine("If you are running with the default configuration please make sure you have started the storage emulator. Press the Windows key and type Azure Storage to select and run it from the list of applications - then restart the sample.");
-                throw;
-            }
-
             CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileName);
             blockBlob.DownloadToStream(stream);
-
         }
 
-        private CloudStorageAccount CreateStorageAccountFromConnectionString(string storageConnectionString)
+        private static CloudStorageAccount CreateStorageAccountFromConnectionString(string storageConnectionString)
         {
             CloudStorageAccount storageAccount;
             try

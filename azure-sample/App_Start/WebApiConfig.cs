@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using azure_sample.Models;
 using System.Web.Http;
 
 namespace azure_sample
@@ -10,6 +8,9 @@ namespace azure_sample
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
+
+            // Model init
+            BlobModel.init();
 
             // Web API routes
             config.MapHttpAttributeRoutes();

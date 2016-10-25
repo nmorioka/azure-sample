@@ -23,11 +23,6 @@ namespace azure_sample.Controllers
         // GET api/file
         public IEnumerable<string> Get()
         {
-            const string ImageToUpload = "c:\\hoge.png";
-
-            BlobModel blobModel = new BlobModel();
-            blobModel.upload(ImageToUpload, ImageToUpload);
-
             return new string[] { "hoge1", "hoge2" };
         }
 
@@ -37,8 +32,7 @@ namespace azure_sample.Controllers
             HttpResponseMessage response = Request.CreateResponse();
 
             MemoryStream ms = new MemoryStream();
-            BlobModel blobModel = new BlobModel();
-            blobModel.download(id, ms);
+            BlobModel.download(id, ms);
 
             response.Content = new ByteArrayContent(ms.ToArray());
             // only jpeg
@@ -69,8 +63,7 @@ namespace azure_sample.Controllers
 
                 // ファイルの移動
                 // File.Move(file.LocalFileName, Path.Combine("C:\\temp\\", fileName));
-                BlobModel blobModel = new BlobModel();
-                blobModel.upload(pass, file.LocalFileName);
+                BlobModel.upload(pass, file.LocalFileName);
 
                 InputImageModel inputImageModel = new InputImageModel();
                 inputImageModel.CrateAsync(pass);
