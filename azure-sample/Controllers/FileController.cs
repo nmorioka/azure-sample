@@ -18,7 +18,7 @@ namespace azure_sample.Controllers
 
     using Models;
 
-    public class HogeController : ApiController
+    public class FileController : ApiController
     {
         // GET api/hoge
         public IEnumerable<string> Get()
