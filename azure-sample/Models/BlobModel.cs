@@ -30,7 +30,6 @@ namespace azure_sample.Models
             CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
 
             // Create a container for organizing blobs within the storage account.
-            Console.WriteLine("1. Creating Container");
             CloudBlobContainer container = blobClient.GetContainerReference("democontainerblockblob");
             try
             {
@@ -39,7 +38,6 @@ namespace azure_sample.Models
             catch (StorageException)
             {
                 Console.WriteLine("If you are running with the default configuration please make sure you have started the storage emulator. Press the Windows key and type Azure Storage to select and run it from the list of applications - then restart the sample.");
-                Console.ReadLine();
                 throw;
             }
 
@@ -50,11 +48,34 @@ namespace azure_sample.Models
             // await container.SetPermissionsAsync(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
 
             // Upload a BlockBlob to the newly created container
-            Console.WriteLine("2. Uploading BlockBlob");
             CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileName);
             blockBlob.UploadFromFile(imagePathName);
         }
 
+        public void download(string fileName, Stream stream)
+        {
+            // How to create a storage connection string - http://msdn.microsoft.com/en-us/library/azure/ee758697.aspx
+            CloudStorageAccount storageAccount = CreateStorageAccountFromConnectionString(CloudConfigurationManager.GetSetting("StorageConnectionString"));
+
+            // Create a blob client for interacting with the blob service.
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+
+            // Create a container for organizing blobs within the storage account.
+            CloudBlobContainer container = blobClient.GetContainerReference("democontainerblockblob");
+            try
+            {
+                container.CreateIfNotExists();
+            }
+            catch (StorageException)
+            {
+                Console.WriteLine("If you are running with the default configuration please make sure you have started the storage emulator. Press the Windows key and type Azure Storage to select and run it from the list of applications - then restart the sample.");
+                throw;
+            }
+
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileName);
+            blockBlob.DownloadToStream(stream);
+
+        }
 
         private CloudStorageAccount CreateStorageAccountFromConnectionString(string storageConnectionString)
         {

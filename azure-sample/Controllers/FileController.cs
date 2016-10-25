@@ -20,7 +20,7 @@ namespace azure_sample.Controllers
 
     public class FileController : ApiController
     {
-        // GET api/hoge
+        // GET api/file
         public IEnumerable<string> Get()
         {
             const string ImageToUpload = "c:\\hoge.png";
@@ -31,17 +31,25 @@ namespace azure_sample.Controllers
             return new string[] { "hoge1", "hoge2" };
         }
 
-        // GET api/hoge/5
-        public string Get(int id)
+        // GET api/file/{id}
+        public HttpResponseMessage Get(string id)
         {
-            return "hoge";
+            HttpResponseMessage response = Request.CreateResponse();
+
+            MemoryStream ms = new MemoryStream();
+            BlobModel blobModel = new BlobModel();
+            blobModel.download(id, ms);
+
+            response.Content = new ByteArrayContent(ms.ToArray());
+            // only jpeg
+            response.Content.Headers.TryAddWithoutValidation("Content-Type", "image/jpeg");
+
+            return response;
         }
 
         // POST api/hoge
         public async Task<HttpResponseMessage> Post(bool overwrite = false)
         {
-            Console.WriteLine("write...");
-
             var tempPath = Path.GetTempPath();
             var provider = new MultipartFormDataStreamProvider(tempPath);
 
