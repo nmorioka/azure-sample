@@ -11,6 +11,7 @@ namespace azure_sample
 
             // Model init
             BlobModel.init();
+            QueueModel.Initialize();
 
             // Web API routes
             config.MapHttpAttributeRoutes();

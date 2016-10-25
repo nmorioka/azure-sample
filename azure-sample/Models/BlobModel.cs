@@ -45,7 +45,7 @@ namespace azure_sample.Models
             }
         }
 
-        public static void upload(string fileName, string imagePathName)
+        public static void Upload(string fileName, string imagePathName)
         {
 
             // Upload a BlockBlob to the newly created container
@@ -53,7 +53,7 @@ namespace azure_sample.Models
             blockBlob.UploadFromFile(imagePathName);
         }
 
-        public static void download(string fileName, Stream stream)
+        public static void Download(string fileName, Stream stream)
         {
             CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileName);
             blockBlob.DownloadToStream(stream);

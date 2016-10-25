@@ -31,8 +31,17 @@ namespace azure_sample.Controllers
         {
             HttpResponseMessage response = Request.CreateResponse();
 
+            // TODO check table
+            InputImageModel imageModel = new InputImageModel();
+            InputImageEntity imageEntry = imageModel.Get(id);
+
+            if (imageEntry == null)
+            {
+                return this.Request.CreateResponse(HttpStatusCode.NotFound);
+            }
+
             MemoryStream ms = new MemoryStream();
-            BlobModel.download(id, ms);
+            BlobModel.Download(id, ms);
 
             response.Content = new ByteArrayContent(ms.ToArray());
             // only jpeg
@@ -41,7 +50,7 @@ namespace azure_sample.Controllers
             return response;
         }
 
-        // POST api/hoge
+        // POST api/file
         public async Task<HttpResponseMessage> Post(bool overwrite = false)
         {
             var tempPath = Path.GetTempPath();
@@ -63,21 +72,21 @@ namespace azure_sample.Controllers
 
                 // ファイルの移動
                 // File.Move(file.LocalFileName, Path.Combine("C:\\temp\\", fileName));
-                BlobModel.upload(pass, file.LocalFileName);
+                BlobModel.Upload(pass, file.LocalFileName);
 
                 InputImageModel inputImageModel = new InputImageModel();
-                inputImageModel.CrateAsync(pass);
+                inputImageModel.Crate(pass);
             }
 
             return this.Request.CreateResponse(HttpStatusCode.OK);
         }
 
-        // PUT api/hoge/5
+        // PUT api/file/5
         public void Put(int id, [FromBody]string value)
         {
         }
 
-        // DELETE api/hoges/5
+        // DELETE api/file/5
         public void Delete(int id)
         {
         }

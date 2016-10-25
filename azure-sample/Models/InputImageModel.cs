@@ -12,7 +12,9 @@
     public class InputImageModel
     {
 
-        internal const string TableName = "inputImage";
+        private const string TableName = "inputImage";
+        private const string AccountName = "Account1";
+
 
         public InputImageModel() { }
 
@@ -21,16 +23,27 @@
         /// Demonstrate basic Table CRUD operations. 
         /// </summary>
         /// <param name="table">The sample table</param>
-        public void CrateAsync(string fileName)
+        public void Crate(string fileName)
         {
             // Create or reference an existing table
             CloudTable table = CreateTable();
 
-            InputImageEntity inputImage = new InputImageEntity("Account1", fileName)
+            InputImageEntity inputImage = new InputImageEntity(AccountName, fileName)
             {
             };
 
             inputImage = InsertOrMergeEntity(table, inputImage);
+        }
+
+        public InputImageEntity Get(string fileName)
+        {
+            CloudTable table = CreateTable();
+
+            TableOperation retrieveOperation = TableOperation.Retrieve<InputImageEntity>(AccountName, fileName);
+            TableResult result = table.Execute(retrieveOperation);
+            InputImageEntity inputImage = result.Result as InputImageEntity;
+
+            return inputImage;
         }
 
         /// <summary>
