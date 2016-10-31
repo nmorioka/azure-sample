@@ -23,7 +23,9 @@ namespace Utils
         private static int num = 0;
         private static void execute(Stream input)
         {
-            string root = RoleEnvironment.GetLocalResource("LocalStorage").RootPath;
+            // string root = RoleEnvironment.GetLocalResource("LocalStorage").RootPath;
+            string root = Environment.GetEnvironmentVariable("TEMP") + @"\";
+
             string srcFilePath = "";
             string dstFilePath = "";
 
@@ -83,10 +85,6 @@ namespace Utils
 
                 resizeBmp.Save(srcFilePath);
 
-//                ViewData["before_image1"] = ImageToBase64String(resizeBmp);
-//                ViewData["before_image1_width"] = resizeBmp.Width / 2;
-//                ViewData["before_image1_height"] = resizeBmp.Height / 2;
-
                 g.Dispose();
                 bmp.Dispose();
                 resizeBmp.Dispose();
@@ -95,30 +93,27 @@ namespace Utils
 
             psi.UseShellExecute = false;
             psi.WorkingDirectory = root;
+            /*
             psi.FileName = root + "image.exe";
             psi.Arguments = String.Format("{0} {1} {2}",
                 root + "exe.xml",
                 dstFilePath,
                 srcFilePath
                 );
+            */
+            psi.FileName = root + "image.exe";
+            psi.Arguments = String.Format("{0} {1} {2}",
+                root + "exe.xml",
+                dstFilePath,
+                srcFilePath
+                );
+
+
             System.Diagnostics.Process p = System.Diagnostics.Process.Start(psi);
             p.WaitForExit();
 
-            if (input != null)
-            {
-//                FileStream file = new FileStream(dstFilePath, FileMode.Open);
-//                Bitmap bmp = new Bitmap(file);
-
-//                ViewData["image1"] = ImageToBase64String(bmp);
-//                ViewData["image1_width"] = bmp.Width / 2;
-//                ViewData["image1_height"] = bmp.Height / 2;
-
-//                bmp.Dispose();
-//                file.Close();
-            }
-
-            System.IO.File.Delete(srcFilePath);
-            System.IO.File.Delete(dstFilePath);
+//            System.IO.File.Delete(srcFilePath);
+//            System.IO.File.Delete(dstFilePath);
         }
     }
 }

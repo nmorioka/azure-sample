@@ -48,9 +48,19 @@ namespace azure_sample_worker
                 return;
             }
 
-            CreateDemoData();
+            var directory = Environment.GetEnvironmentVariable("TEMP");
+            Console.WriteLine("a : " + directory);
 
-            JobHost host = new JobHost();
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings["AzureWebJobsStorage"].ConnectionString);
+
+            Utils.Storage.DownLoadContents(storageAccount);
+
+            Console.WriteLine("Creating Demo data");
+            CreateDemoData(storageAccount);
+
+            JobHostConfiguration config = new JobHostConfiguration();
+            config.Queues.MaxPollingInterval = TimeSpan.FromMilliseconds(200);
+            JobHost host = new JobHost(config);
             host.RunAndBlock();
         }
 
@@ -69,12 +79,8 @@ namespace azure_sample_worker
             return configOK;
         }
 
-        private static void CreateDemoData()
+        private static void CreateDemoData(CloudStorageAccount storageAccount)
         {
-            Console.WriteLine("Creating Demo data");
-            Console.WriteLine("Functions will store logs in the 'azure-webjobs-hosts' container in the specified Azure storage account. The functions take in a TextWriter parameter for logging.");
-
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings["AzureWebJobsStorage"].ConnectionString);
 
             CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
             CloudQueue queue = queueClient.GetQueueReference("initialorder");

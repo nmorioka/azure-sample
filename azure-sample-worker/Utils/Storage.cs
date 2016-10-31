@@ -32,6 +32,7 @@ namespace Utils
                     {
                         CloudBlockBlob blob = (CloudBlockBlob)item;
 
+                        Console.WriteLine("b : " + DLDir + Path.GetFileName(item.Uri.ToString()));
                         blob.DownloadToFile(DLDir + Path.GetFileName(item.Uri.ToString()), FileMode.Create);
                     }
                     else if (item.GetType() == typeof(CloudPageBlob))
@@ -62,27 +63,26 @@ namespace Utils
         }
 
         // 動画生成に必要なコンテンツをStorageからダウンロード
-        public static bool DownLoadContents()
+        public static bool DownLoadContents(CloudStorageAccount account)
         {
             try
             {
-                StorageCredentials credentials =
-                    new StorageCredentials("cuticlestorage", "BXOaKxZovkSTcBGNNni32Rx5w2s1TrRPAMoIOI8DIBHynUKTXx2YtrDi/UcbsdC0toelXXm0J/dYelwHYJD9Pw==");
-                CloudStorageAccount account = new CloudStorageAccount(credentials, true);
-
                 // クライアントの作成
                 CloudBlobClient client = account.CreateCloudBlobClient();
                 CloudBlobContainer container = client.GetContainerReference("bin");
 
-                string root = RoleEnvironment.GetLocalResource("LocalStorage").RootPath;
+                // string root = RoleEnvironment.GetLocalResource("LocalStorage").RootPath;
+                string root = Environment.GetEnvironmentVariable("TEMP") + @"\";
 
+                Console.WriteLine("go copy " + container.ListBlobs());
                 DownLoadDirectory(container.ListBlobs(), root);
 
                 Directory.CreateDirectory(root + "Src");
                 Directory.CreateDirectory(root + "Dst");
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.ToString());
                 return false;
             }
 
