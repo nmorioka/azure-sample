@@ -54,6 +54,9 @@ namespace azure_sample_worker
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings["AzureWebJobsStorage"].ConnectionString);
 
             Utils.Storage.DownLoadContents(storageAccount);
+            System.IO.Stream stream = Utils.Storage.DownloadFileToStream(storageAccount, "hoge.jpg");
+
+            Utils.ImageProcessor.execute(stream);
 
             Console.WriteLine("Creating Demo data");
             CreateDemoData(storageAccount);

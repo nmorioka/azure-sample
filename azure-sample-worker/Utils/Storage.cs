@@ -88,5 +88,18 @@ namespace Utils
 
             return true;
         }
+
+        public static Stream DownloadFileToStream(CloudStorageAccount account, string fileName)
+        {
+            // クライアントの作成
+            CloudBlobClient client = account.CreateCloudBlobClient();
+            CloudBlobContainer container = client.GetContainerReference("sample");
+
+            MemoryStream ms = new MemoryStream();
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileName);
+            blockBlob.DownloadToStream(ms);
+
+            return ms;
+        }
     }
 }

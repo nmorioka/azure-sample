@@ -21,7 +21,8 @@ namespace Utils
     public class ImageProcessor
     {
         private static int num = 0;
-        private static void execute(Stream input)
+
+        public static void execute(Stream input)
         {
             // string root = RoleEnvironment.GetLocalResource("LocalStorage").RootPath;
             string root = Environment.GetEnvironmentVariable("TEMP") + @"\";
@@ -32,8 +33,8 @@ namespace Utils
 //            lock (thisLock)
 //            {
 
-                srcFilePath = root + @"Src\" + num + ".bmp";
-                dstFilePath = root + @"Dst\" + num + ".png";
+                srcFilePath = root + @"Src\" + num + ".jpg";
+                dstFilePath = root + @"Dst\" + num + ".jpg";
                 ++num;
 
             //            }
@@ -101,11 +102,15 @@ namespace Utils
                 srcFilePath
                 );
             */
-            psi.FileName = root + "image.exe";
-            psi.Arguments = String.Format("{0} {1} {2}",
-                root + "exe.xml",
-                dstFilePath,
-                srcFilePath
+
+            // from_image.png -resize 50% to_image.png
+
+            psi.FileName = root + "convert.exe";
+            psi.Arguments = String.Format("{0} {1} {2} {3}",
+                srcFilePath,
+                "-resize",
+                "50%",
+                dstFilePath
                 );
 
 
