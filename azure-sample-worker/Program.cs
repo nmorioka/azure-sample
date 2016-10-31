@@ -87,9 +87,8 @@ namespace azure_sample_worker
 
             CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
             CloudQueue queue = queueClient.GetQueueReference("initialorder");
-            CloudQueue queue2 = queueClient.GetQueueReference("initialorderproperty");
+
             queue.CreateIfNotExists();
-            queue2.CreateIfNotExists();
 
             Order person = new Order()
             {
@@ -98,7 +97,6 @@ namespace azure_sample_worker
             };
 
             queue.AddMessage(new CloudQueueMessage(JsonConvert.SerializeObject(person)));
-            queue2.AddMessage(new CloudQueueMessage(JsonConvert.SerializeObject(person)));
         }
     }
 }

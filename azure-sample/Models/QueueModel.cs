@@ -4,14 +4,25 @@ using Microsoft.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
 using System.Configuration;
 using System.Threading;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.Azure;
+using Microsoft.WindowsAzure.Storage.Queue;
+using Newtonsoft.Json;
 
 namespace azure_sample.Models
 {
+    public class Order
+    {
+        public string ImageId { get; set; }
+
+        public string OrderId { get; set; }
+    }
+
     public class QueueModel
     {
 
-        private static QueueClient queueClient;
-        private static string QueueName = "JobQueue";
+        private static CloudQueueClient queueClient;
+        private static CloudQueue queue;
         const Int16 maxTrials = 4;
 
         public QueueModel() { }
@@ -19,17 +30,17 @@ namespace azure_sample.Models
 
         public static void Initialize()
         {
-            var namespaceManager = NamespaceManager.Create();
 
-            if (namespaceManager.QueueExists(QueueName) == false)
-            {
-                namespaceManager.CreateQueue(QueueName);
-            }
+            // Retrieve storage account information from connection string.
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("StorageConnectionString"));
 
-            queueClient = QueueClient.Create(QueueName);
+            queueClient = storageAccount.CreateCloudQueueClient();
+            queue = queueClient.GetQueueReference("initialorder");
+
+            queue.CreateIfNotExists();
         }
 
-        public static void SendMessage(string serializedMessage)
+        public static void SendMessage(string imageId, string orderId)
         {
             // List<BrokeredMessage> messageList = new List<BrokeredMessage>();
 
@@ -37,13 +48,17 @@ namespace azure_sample.Models
             // messageList.Add(CreateSampleMessage("2", "Second message information"));
             // messageList.Add(CreateSampleMessage("3", "Third message information"));
 
-            var message = CreateSampleMessage("1", serializedMessage);
+            var message = new Order()
+            {
+                ImageId = imageId,
+                OrderId = orderId
+            };
 
             while (true)
             {
                 try
                 {
-                    queueClient.Send(message);
+                    queue.AddMessage(new CloudQueueMessage(JsonConvert.SerializeObject(message)));
                 }
                 catch (MessagingException e)
                 {
@@ -59,13 +74,6 @@ namespace azure_sample.Models
                 }
                 break;
             }
-        }
-
-        private static BrokeredMessage CreateSampleMessage(string messageId, string messageBody)
-        {
-            BrokeredMessage message = new BrokeredMessage(messageBody);
-            message.MessageId = messageId;
-            return message;
         }
 
         private static void HandleTransientErrors(MessagingException e)

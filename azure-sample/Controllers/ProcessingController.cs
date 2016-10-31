@@ -33,18 +33,18 @@ namespace azure_sample.Controllers
         }
 
         // POST api/processing
-        public async Task<HttpResponseMessage> Post(string imageId = "", int processId = 0)
+        public async Task<HttpResponseMessage> Post([FromUri]string processId = "", [FromUri]string imageId = "")
         {
             InputImageModel inputImageModel = new InputImageModel();
             InputImageEntity imageEntity = inputImageModel.Get(imageId);
 
-            if (imageEntity == null)
-            {
-                return this.Request.CreateResponse(HttpStatusCode.NotFound);
-            }
+//            if (imageEntity == null)
+//            {
+//                return this.Request.CreateResponse(HttpStatusCode.NotFound);
+//            }
 
             // send job
-            QueueModel.SendMessage("hoge");
+            QueueModel.SendMessage(imageId, processId);
 
             return this.Request.CreateResponse(HttpStatusCode.OK);
         }
