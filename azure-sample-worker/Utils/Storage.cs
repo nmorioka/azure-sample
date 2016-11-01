@@ -89,5 +89,27 @@ namespace Utils
 
             return ms;
         }
+
+        public static Stream FileToStream(CloudStorageAccount account, string fileName)
+        {
+            CloudBlobClient client = account.CreateCloudBlobClient();
+            CloudBlobContainer container = client.GetContainerReference("sample");
+
+            MemoryStream ms = new MemoryStream();
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileName);
+            blockBlob.DownloadToStream(ms);
+
+            return ms;
+        }
+
+        public static void UploadFileToStream(CloudStorageAccount account, string fileName)
+        {
+            CloudBlobClient client = account.CreateCloudBlobClient();
+            CloudBlobContainer container = client.GetContainerReference("sample");
+
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference("fuga2.png");
+            blockBlob.UploadFromFile(fileName);
+        }
+
     }
 }
