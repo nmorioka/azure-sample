@@ -28,8 +28,15 @@ namespace azure_sample_worker
         /// </summary>
         public static void BindToPoisonQueue([QueueTrigger(QueueName.JOB_QUEUE_NAME)] Order order, TextWriter log)
         {
+            // 1. read job
+
+            // 2 download image
 //            System.IO.Stream stream = Utils.Storage.DownloadFileToStream("hoge.jpg");
+
+            // 3. execute and uplaod image
 //            Utils.ImageProcessor.execute(stream);
+
+            // 4. record job
 
             log.Write("This message couldn't be processed by the original function: " + order.Name);
         }

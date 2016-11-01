@@ -106,6 +106,8 @@
   <ItemGroup>
     <Compile Include="Dto\Order.cs" />
     <Compile Include="Functions.cs" />
+    <Compile Include="Models\ImageProcessJobEntity.cs" />
+    <Compile Include="Models\ImageProcessJobModel.cs" />
     <Compile Include="WorkerEnvironment\BlobName.cs" />
     <Compile Include="WorkerEnvironment\QueueName.cs" />
     <Compile Include="Program.cs" />
