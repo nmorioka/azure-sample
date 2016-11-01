@@ -3,6 +3,7 @@ using System.IO;
 using System.Drawing;
 using Microsoft.WindowsAzure.Storage;
 using System.Drawing.Imaging;
+using WorkerEnvironment;
 
 namespace Utils
 {
@@ -11,7 +12,7 @@ namespace Utils
     {
         private static int num = 0;
 
-        public static void execute(Stream input, CloudStorageAccount storageAccount)
+        public static void execute(Stream input)
         {
             string srcFilePath = "";
             string dstFilePath = "";
@@ -55,7 +56,7 @@ namespace Utils
             System.Diagnostics.Process p = System.Diagnostics.Process.Start(psi);
             p.WaitForExit();
 
-            Storage.UploadFileToStream(storageAccount, dstFilePath);
+            Storage.UploadFileToStream(dstFilePath, "fugafuga.png");
 
             System.IO.File.Delete(srcFilePath);
             System.IO.File.Delete(dstFilePath);

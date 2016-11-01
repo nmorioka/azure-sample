@@ -3,13 +3,20 @@ using System.IO;
 using System.Collections.Generic;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
-
+using WorkerEnvironment;
 
 namespace Utils
 {
 
     public class Storage
     {
+        private static CloudStorageAccount cloudStorageAccount;
+
+        public static void Init(CloudStorageAccount account)
+        {
+            cloudStorageAccount = account;
+        }
+
         private static bool DownLoadDirectory(IEnumerable<IListBlobItem> list, string DLDir)
         {
             try
@@ -54,13 +61,13 @@ namespace Utils
         }
 
         // 動画生成に必要なコンテンツをStorageからダウンロード
-        public static bool DownLoadContents(CloudStorageAccount account)
+        public static bool DownLoadContents()
         {
             try
             {
                 // クライアントの作成
-                CloudBlobClient client = account.CreateCloudBlobClient();
-                CloudBlobContainer container = client.GetContainerReference("bin");
+                CloudBlobClient client = cloudStorageAccount.CreateCloudBlobClient();
+                CloudBlobContainer container = client.GetContainerReference(BlobName.BIN_CONTAINER_NAME);
 
                 Directory.CreateDirectory(ProcessorPath.binPath);
                 DownLoadDirectory(container.ListBlobs(), ProcessorPath.binPath);
@@ -77,11 +84,11 @@ namespace Utils
             return true;
         }
 
-        public static Stream DownloadFileToStream(CloudStorageAccount account, string fileName)
+        public static Stream DownloadFileToStream(string fileName)
         {
             // クライアントの作成
-            CloudBlobClient client = account.CreateCloudBlobClient();
-            CloudBlobContainer container = client.GetContainerReference("sample");
+            CloudBlobClient client = cloudStorageAccount.CreateCloudBlobClient();
+            CloudBlobContainer container = client.GetContainerReference(BlobName.IMAGE_CONTAINER_NAME);
 
             MemoryStream ms = new MemoryStream();
             CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileName);
@@ -90,25 +97,13 @@ namespace Utils
             return ms;
         }
 
-        public static Stream FileToStream(CloudStorageAccount account, string fileName)
+        public static void UploadFileToStream(string localFileName, string uploadFileName)
         {
-            CloudBlobClient client = account.CreateCloudBlobClient();
-            CloudBlobContainer container = client.GetContainerReference("sample");
+            CloudBlobClient client = cloudStorageAccount.CreateCloudBlobClient();
+            CloudBlobContainer container = client.GetContainerReference(BlobName.RESULT_CONTAINER_NAME);
 
-            MemoryStream ms = new MemoryStream();
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileName);
-            blockBlob.DownloadToStream(ms);
-
-            return ms;
-        }
-
-        public static void UploadFileToStream(CloudStorageAccount account, string fileName)
-        {
-            CloudBlobClient client = account.CreateCloudBlobClient();
-            CloudBlobContainer container = client.GetContainerReference("sample");
-
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference("fuga2.png");
-            blockBlob.UploadFromFile(fileName);
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(uploadFileName);
+            blockBlob.UploadFromFile(localFileName);
         }
 
     }

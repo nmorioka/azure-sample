@@ -17,9 +17,10 @@
 using Microsoft.Azure.WebJobs;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
-using Newtonsoft.Json;
 using System;
 using System.Configuration;
+using Utils;
+using WorkerEnvironment;
 
 namespace azure_sample_worker
 {
@@ -48,19 +49,21 @@ namespace azure_sample_worker
                 return;
             }
 
-            var directory = Environment.GetEnvironmentVariable("TEMP");
-            Console.WriteLine("a : " + directory);
-
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings["AzureWebJobsStorage"].ConnectionString);
 
+            Storage.Init(storageAccount);
+
+
+            // App Serviceでは必要なくできる。d:\home参照
             // Utils.Storage.DownLoadContents(storageAccount);
-            System.IO.Stream stream = Utils.Storage.DownloadFileToStream(storageAccount, "hoge.jpg");
 
-            Utils.ImageProcessor.execute(stream, storageAccount);
+            System.IO.Stream stream = Storage.DownloadFileToStream("hoge.jpg");
+            ImageProcessor.execute(stream);
 
-            Console.WriteLine("Creating Demo data");
-            CreateDemoData(storageAccount);
+            Console.WriteLine("Init queue");
+            Init(storageAccount);
 
+            Console.WriteLine("Waiting queue. run and block..");
             JobHostConfiguration config = new JobHostConfiguration();
             config.Queues.MaxPollingInterval = TimeSpan.FromMilliseconds(200);
             JobHost host = new JobHost(config);
@@ -82,21 +85,22 @@ namespace azure_sample_worker
             return configOK;
         }
 
-        private static void CreateDemoData(CloudStorageAccount storageAccount)
+        private static void Init(CloudStorageAccount storageAccount)
         {
 
             CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
-            CloudQueue queue = queueClient.GetQueueReference("initialorder");
+            CloudQueue queue = queueClient.GetQueueReference(QueueName.JOB_QUEUE_NAME);
 
             queue.CreateIfNotExists();
 
+            /*
             Order person = new Order()
             {
                 Name = "Alex",
                 OrderId = Guid.NewGuid().ToString("N").ToLower()
             };
-
             queue.AddMessage(new CloudQueueMessage(JsonConvert.SerializeObject(person)));
+            */
         }
     }
 }

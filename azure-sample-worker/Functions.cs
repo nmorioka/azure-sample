@@ -14,30 +14,23 @@
 // places, or events is intended or should be inferred.
 //----------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
+using Dto;
+using WorkerEnvironment;
 
 namespace azure_sample_worker
 {
-    public class Order
-    {
-        public string Name { get; set; }
-
-        public string OrderId { get; set; }
-    }
-
     public class Functions
     {
         /// <summary>
         /// This function will be invoked when a message ends up in the poison queue
         /// </summary>
-        public static void BindToPoisonQueue([QueueTrigger("initialorder")] Order order, TextWriter log)
+        public static void BindToPoisonQueue([QueueTrigger(QueueName.JOB_QUEUE_NAME)] Order order, TextWriter log)
         {
+//            System.IO.Stream stream = Utils.Storage.DownloadFileToStream("hoge.jpg");
+//            Utils.ImageProcessor.execute(stream);
+
             log.Write("This message couldn't be processed by the original function: " + order.Name);
         }
     }
