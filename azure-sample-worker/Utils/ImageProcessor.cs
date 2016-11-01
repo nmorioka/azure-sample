@@ -1,22 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.IO;
 using System.Drawing;
-
 
 namespace Utils
 {
-    using System;
-    using System.Runtime.InteropServices;
-    using System.IO;
-    using System.Collections.Generic;
-    using Microsoft.WindowsAzure;
-    using Microsoft.WindowsAzure.Storage;
-    using Microsoft.WindowsAzure.Storage.Auth;
-    using Microsoft.WindowsAzure.Storage.Blob;
-    using Microsoft.WindowsAzure.Storage.RetryPolicies;
-    using Microsoft.WindowsAzure.ServiceRuntime;
 
     public class ImageProcessor
     {
@@ -24,29 +11,53 @@ namespace Utils
 
         public static void execute(Stream input)
         {
-            // string root = RoleEnvironment.GetLocalResource("LocalStorage").RootPath;
-            string root = Environment.GetEnvironmentVariable("TEMP") + @"\";
-
             string srcFilePath = "";
             string dstFilePath = "";
 
 //            lock (thisLock)
 //            {
 
-                srcFilePath = root + @"Src\" + num + ".jpg";
-                dstFilePath = root + @"Dst\" + num + ".jpg";
+                srcFilePath = ProcessorPath.srcDirPath + num + ".png";
+                dstFilePath = ProcessorPath.dstDirPath + num + ".png";
                 ++num;
 
             //            }
 
-            /*
-             ファイルの上限値はWeb.configの「maxRequestLength」で調整します。単位はKB
-            <system.web>
-                <compilation debug="true" targetFramework="4.5" />
-                <httpRuntime targetFramework="4.5" maxRequestLength="10240" />
-            </system.web>
-            */
+            // inputからテンポラリファイルを生成
+            SaveSrcFile(input, srcFilePath);
+            
+            // exeの実行
+            System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+            psi.UseShellExecute = false;
+            // WorkingDirectoryは実行パスと同じじゃないとダメ
+            psi.WorkingDirectory = ProcessorPath.binPath;
+            psi.FileName = ProcessorPath.binPath + "image.exe";
+            psi.Arguments = String.Format("{0} {1} {2}",
+                ProcessorPath.binPath + "exe.xml",
+                dstFilePath,
+                srcFilePath
+                );
 
+            // from_image.png -resize 50% to_image.png
+            /*
+            psi.FileName = root + "Bin" + @"\" + "convert.exe";
+            psi.Arguments = String.Format("{0} {1} {2} {3}",
+                srcFilePath,
+                "-resize",
+                "50%",
+                dstFilePath
+                );
+              */              
+
+            System.Diagnostics.Process p = System.Diagnostics.Process.Start(psi);
+            p.WaitForExit();
+
+//            System.IO.File.Delete(srcFilePath);
+//            System.IO.File.Delete(dstFilePath);
+        }
+
+        private static void SaveSrcFile(Stream input, string fileName)
+        {
             if (input != null)
             {
                 Bitmap bmp = new Bitmap(input);
@@ -84,41 +95,13 @@ namespace Utils
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Bicubic;
                 g.DrawImage(bmp, 0, 0, width, height);
 
-                resizeBmp.Save(srcFilePath);
+                resizeBmp.Save(fileName);
 
                 g.Dispose();
                 bmp.Dispose();
                 resizeBmp.Dispose();
             }
-            System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
-
-            psi.UseShellExecute = false;
-            psi.WorkingDirectory = root;
-            /*
-            psi.FileName = root + "image.exe";
-            psi.Arguments = String.Format("{0} {1} {2}",
-                root + "exe.xml",
-                dstFilePath,
-                srcFilePath
-                );
-            */
-
-            // from_image.png -resize 50% to_image.png
-
-            psi.FileName = root + "convert.exe";
-            psi.Arguments = String.Format("{0} {1} {2} {3}",
-                srcFilePath,
-                "-resize",
-                "50%",
-                dstFilePath
-                );
-
-
-            System.Diagnostics.Process p = System.Diagnostics.Process.Start(psi);
-            p.WaitForExit();
-
-//            System.IO.File.Delete(srcFilePath);
-//            System.IO.File.Delete(dstFilePath);
         }
+
     }
 }

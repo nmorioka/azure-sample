@@ -1,21 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 
 namespace Utils
 {
-    using System;
-    using System.Runtime.InteropServices;
-    using System.IO;
-    using System.Collections.Generic;
-    using Microsoft.WindowsAzure;
-    using Microsoft.WindowsAzure.Storage;
-    using Microsoft.WindowsAzure.Storage.Auth;
-    using Microsoft.WindowsAzure.Storage.Blob;
-    using Microsoft.WindowsAzure.Storage.RetryPolicies;
-    using Microsoft.WindowsAzure.ServiceRuntime;
 
     public class Storage
     {
@@ -71,14 +62,11 @@ namespace Utils
                 CloudBlobClient client = account.CreateCloudBlobClient();
                 CloudBlobContainer container = client.GetContainerReference("bin");
 
-                // string root = RoleEnvironment.GetLocalResource("LocalStorage").RootPath;
-                string root = Environment.GetEnvironmentVariable("TEMP") + @"\";
+                Directory.CreateDirectory(ProcessorPath.binPath);
+                DownLoadDirectory(container.ListBlobs(), ProcessorPath.binPath);
 
-                Console.WriteLine("go copy " + container.ListBlobs());
-                DownLoadDirectory(container.ListBlobs(), root);
-
-                Directory.CreateDirectory(root + "Src");
-                Directory.CreateDirectory(root + "Dst");
+                Directory.CreateDirectory(ProcessorPath.srcDirPath);
+                Directory.CreateDirectory(ProcessorPath.dstDirPath);
             }
             catch (Exception e)
             {
