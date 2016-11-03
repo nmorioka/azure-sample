@@ -1,4 +1,4 @@
-﻿using azure_sample.Models;
+﻿using Models;
 using System.Web.Http;
 
 namespace azure_sample

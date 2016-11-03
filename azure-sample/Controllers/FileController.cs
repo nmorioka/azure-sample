@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Threading.Tasks;
+using Models;
 
 namespace azure_sample.Controllers
 {
-    using Microsoft.WindowsAzure;
-    using Microsoft.WindowsAzure.Storage;
-    using Microsoft.WindowsAzure.Storage.Blob;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Threading.Tasks;
-
-    using Models;
+    public class InputImageDTO
+    {
+        public string ImageId { get; set; }
+    }
 
     public class FileController : ApiController
     {
@@ -51,12 +47,14 @@ namespace azure_sample.Controllers
         }
 
         // POST api/file
-        public async Task<HttpResponseMessage> Post(bool overwrite = false)
+        public async Task<IEnumerable<InputImageDTO>> Post()
         {
             var tempPath = Path.GetTempPath();
             var provider = new MultipartFormDataStreamProvider(tempPath);
 
             await this.Request.Content.ReadAsMultipartAsync(provider);
+
+            var list = new List<InputImageDTO>();
 
             foreach (var file in provider.FileData)
             {
@@ -68,17 +66,22 @@ namespace azure_sample.Controllers
 
                 // ファイル名は乱数を入れておく
                 Guid g = System.Guid.NewGuid();
-                string pass = g.ToString("N").Substring(0, 15);
+                string imageId = g.ToString("N").Substring(0, 15);
 
                 // ファイルの移動
                 // File.Move(file.LocalFileName, Path.Combine("C:\\temp\\", fileName));
-                BlobModel.Upload(pass, file.LocalFileName);
+                BlobModel.Upload(imageId, file.LocalFileName);
 
                 InputImageModel inputImageModel = new InputImageModel();
-                inputImageModel.Crate(pass);
+                inputImageModel.Create(imageId);
+
+                list.Add(new InputImageDTO()
+                    {
+                        ImageId = imageId
+                    });
             }
 
-            return this.Request.CreateResponse(HttpStatusCode.OK);
+            return list;
         }
 
         // PUT api/file/5

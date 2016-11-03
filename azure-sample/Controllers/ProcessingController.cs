@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.IO;
 using System.Threading.Tasks;
-
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
-
+using Models;
+using System;
 
 namespace azure_sample.Controllers
 {
-    using Models;
+    public class JobOrderDTO
+    {
+        public string OrderId { get; set; }
+    }
 
     public class ProcessingController : ApiController
     {
@@ -33,20 +31,27 @@ namespace azure_sample.Controllers
         }
 
         // POST api/processing
-        public async Task<HttpResponseMessage> Post([FromUri]string processId = "", [FromUri]string imageId = "")
+        public async Task<JobOrderDTO> Post([FromUri]string processId = "", [FromUri]string imageId = "")
         {
             InputImageModel inputImageModel = new InputImageModel();
             InputImageEntity imageEntity = inputImageModel.Get(imageId);
 
-//            if (imageEntity == null)
-//            {
-//                return this.Request.CreateResponse(HttpStatusCode.NotFound);
-//            }
+            if (imageEntity == null)
+            {
+                // return this.Request.CreateResponse(HttpStatusCode.NotFound);
+                return null;
+            }
+
+            ImageProcessJobModel imageProcessJobModel = new ImageProcessJobModel();
+            Guid g = System.Guid.NewGuid();
+            string orderId = g.ToString("N").Substring(0, 15);
+
+            imageProcessJobModel.Crate(orderId, imageEntity.RowKey);
 
             // send job
             QueueModel.SendMessage(imageId, processId);
 
-            return this.Request.CreateResponse(HttpStatusCode.OK);
+            return new JobOrderDTO() { OrderId = orderId};
         }
 
     }

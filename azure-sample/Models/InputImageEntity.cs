@@ -1,4 +1,4 @@
-﻿namespace azure_sample.Models
+﻿namespace Models
 {
     using Microsoft.WindowsAzure.Storage.Table;
 
@@ -8,13 +8,12 @@
         public InputImageEntity() { }
 
         // Define the PK and RK
-        public InputImageEntity(string userName, string fileName)
+        public InputImageEntity(string userId, string imageId)
         {
-            this.PartitionKey = userName;
-            this.RowKey = fileName;
+            this.PartitionKey = userId;
+            this.RowKey = imageId;
         }
 
-        //For any property that should be stored in the table service, the property must be a public property of a supported type that exposes both get and set.        
         public bool Valid { get; set; }
         public System.DateTime CreateTime { get; set; }
     }

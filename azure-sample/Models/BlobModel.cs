@@ -1,5 +1,5 @@
 ﻿
-namespace azure_sample.Models
+namespace Models
 {
     using Microsoft.Azure;
     using Microsoft.WindowsAzure;
@@ -33,7 +33,7 @@ namespace azure_sample.Models
             CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
 
             // Create a container for organizing blobs within the storage account.
-            container = blobClient.GetContainerReference("democontainerblockblob");
+            container = blobClient.GetContainerReference("upload-images");
             try
             {
                 container.CreateIfNotExists();

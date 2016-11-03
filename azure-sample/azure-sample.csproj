@@ -198,6 +198,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\BlobModel.cs" />
+    <Compile Include="Models\ImageProcessJobEntity.cs" />
+    <Compile Include="Models\ImageProcessJobModel.cs" />
     <Compile Include="Models\QueueModel.cs" />
     <Compile Include="Models\InputImageModel.cs" />
     <Compile Include="Models\InputImageEntity.cs" />

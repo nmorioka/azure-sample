@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using Microsoft.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
-using System.Configuration;
 using System.Threading;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 
-namespace azure_sample.Models
+namespace Models
 {
     public class Order
     {

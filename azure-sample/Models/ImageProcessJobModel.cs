@@ -1,50 +1,53 @@
-﻿namespace Models
-{
-    using Microsoft.Azure;
-    using Microsoft.WindowsAzure;
-    using Microsoft.WindowsAzure.Storage;
-    using Microsoft.WindowsAzure.Storage.Table;
-    using System;
-    using System.Collections.Generic;
-    using System.Net;
-    using System.Threading.Tasks;
+﻿using Microsoft.Azure;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Table;
+using System;
 
-    public class InputImageModel
+
+namespace Models
+{
+
+    public class ImageProcessJobModel
     {
 
-        private const string TableName = "inputImage";
+        private const string TableName = "imageProcessJob";
         private const string AccountId = "Account1";
-
-        public InputImageModel() { }
-
 
         /// <summary>
         /// Demonstrate basic Table CRUD operations. 
         /// </summary>
         /// <param name="table">The sample table</param>
-        public void Create(string fileName)
+        public void Crate(string orderId, string imageId)
         {
             // Create or reference an existing table
             CloudTable table = CreateTable();
 
-            InputImageEntity inputImage = new InputImageEntity(AccountId, fileName)
+            ImageProcessJobEntity job = new ImageProcessJobEntity(AccountId, orderId)
             {
-                Valid = true,
-                CreateTime = DateTime.Now
+                Status = "REQUEST",
+                ImageId = imageId,
+                CreateTime = new DateTime(),
+                UpdateTime = new DateTime()
             };
 
-            inputImage = InsertOrMergeEntity(table, inputImage);
+            job = InsertOrMergeEntity(table, job);
         }
 
-        public InputImageEntity Get(string fileName)
+        public ImageProcessJobEntity Get(string orderId)
         {
             CloudTable table = CreateTable();
 
-            TableOperation retrieveOperation = TableOperation.Retrieve<InputImageEntity>(AccountId, fileName);
+            TableOperation retrieveOperation = TableOperation.Retrieve<ImageProcessJobEntity>(AccountId, orderId);
             TableResult result = table.Execute(retrieveOperation);
-            InputImageEntity inputImage = result.Result as InputImageEntity;
+            ImageProcessJobEntity job = result.Result as ImageProcessJobEntity;
 
-            return inputImage;
+            return job;
+        }
+
+        public void Update(ImageProcessJobEntity entity)
+        {
+            CloudTable table = CreateTable();
+            InsertOrMergeEntity(table, entity);
         }
 
         /// <summary>
@@ -53,13 +56,10 @@
         /// <returns>A CloudTable object</returns>
         private CloudTable CreateTable()
         {
-            // Retrieve storage account information from connection string.
             CloudStorageAccount storageAccount = CreateStorageAccountFromConnectionString(CloudConfigurationManager.GetSetting("StorageConnectionString"));
 
-            // Create a table client for interacting with the table service
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
-            // Create a table client for interacting with the table service 
             CloudTable table = tableClient.GetTableReference(TableName);
             try
             {
@@ -120,16 +120,13 @@
         /// <param name="table">The sample table name</param>
         /// <param name="entity">The entity to insert or merge</param>
         /// <returns></returns>
-        private InputImageEntity InsertOrMergeEntity(CloudTable table, InputImageEntity entity)
+        private ImageProcessJobEntity InsertOrMergeEntity(CloudTable table, ImageProcessJobEntity entity)
         {
-            // Create the InsertOrReplace  TableOperation
             TableOperation insertOrMergeOperation = TableOperation.InsertOrMerge(entity);
 
-            // Execute the operation.
             TableResult result = table.Execute(insertOrMergeOperation);
-            Console.WriteLine(result);
-            InputImageEntity insertedCustomer = result.Result as InputImageEntity;
-            return insertedCustomer;
+            ImageProcessJobEntity inserted = result.Result as ImageProcessJobEntity;
+            return inserted;
         }
 
     }
