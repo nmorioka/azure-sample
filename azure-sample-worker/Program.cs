@@ -17,6 +17,7 @@
 using Microsoft.Azure.WebJobs;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
+using Models;
 using System;
 using System.Configuration;
 using Utils;
@@ -49,19 +50,21 @@ namespace azure_sample_worker
                 return;
             }
 
+            // Init.
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings["AzureWebJobsStorage"].ConnectionString);
-
             Storage.Init(storageAccount);
-
+            InputImageModel.Init(storageAccount);
+            ImageProcessJobModel.Init(storageAccount);
 
             // App Serviceでは必要なくできる。d:\home参照
             // Utils.Storage.DownLoadContents(storageAccount);
 
-            System.IO.Stream stream = Storage.DownloadFileToStream("hoge.jpg");
-            ImageProcessor.execute(stream);
-
-            Console.WriteLine("Init queue");
-            Init(storageAccount);
+            // example..
+            // System.IO.Stream stream = Storage.DownloadFileToStream("hoge.jpg");
+            // ImageProcessor.execute(stream);
+            // 
+            // Console.WriteLine("Init queue");
+            // Init(storageAccount);
 
             Console.WriteLine("Waiting queue. run and block..");
             JobHostConfiguration config = new JobHostConfiguration();

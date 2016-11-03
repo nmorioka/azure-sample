@@ -2,22 +2,19 @@
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
 
-
 namespace Models
 {
 
-    public class ImageProcessJobModel
+    public class InputImageModel
     {
 
-        private const string TableName = "imageProcessJob";
+        private const string TableName = "inputImage";
         private const string AccountId = "Account1";
 
         private static CloudStorageAccount cloudStorageAccount;
 
 
-        private ImageProcessJobModel()
-        {
-        }
+        private InputImageModel() { }
 
         public static void Init(CloudStorageAccount account)
         {
@@ -28,37 +25,28 @@ namespace Models
         /// Demonstrate basic Table CRUD operations. 
         /// </summary>
         /// <param name="table">The sample table</param>
-        public static void Crate(string orderId, string imageId)
+        public static void Create(string fileName)
         {
-            // Create or reference an existing table
             CloudTable table = CreateTable();
 
-            ImageProcessJobEntity job = new ImageProcessJobEntity(AccountId, orderId)
+            InputImageEntity inputImage = new InputImageEntity(AccountId, fileName)
             {
-                Status = "REQUEST",
-                ImageId = imageId,
-                CreateTime = DateTime.Now,
-                UpdateTime = DateTime.Now
+                Valid = true,
+                CreateTime = DateTime.Now
             };
 
-            job = InsertOrMergeEntity(table, job);
+            inputImage = InsertOrMergeEntity(table, inputImage);
         }
 
-        public static ImageProcessJobEntity Get(string orderId)
+        public static InputImageEntity Get(string fileName)
         {
             CloudTable table = CreateTable();
 
-            TableOperation retrieveOperation = TableOperation.Retrieve<ImageProcessJobEntity>(AccountId, orderId);
+            TableOperation retrieveOperation = TableOperation.Retrieve<InputImageEntity>(AccountId, fileName);
             TableResult result = table.Execute(retrieveOperation);
-            ImageProcessJobEntity job = result.Result as ImageProcessJobEntity;
+            InputImageEntity inputImage = result.Result as InputImageEntity;
 
-            return job;
-        }
-
-        public static void Update(ImageProcessJobEntity entity)
-        {
-            CloudTable table = CreateTable();
-            InsertOrMergeEntity(table, entity);
+            return inputImage;
         }
 
         /// <summary>
@@ -101,13 +89,16 @@ namespace Models
         /// <param name="table">The sample table name</param>
         /// <param name="entity">The entity to insert or merge</param>
         /// <returns></returns>
-        private static ImageProcessJobEntity InsertOrMergeEntity(CloudTable table, ImageProcessJobEntity entity)
+        private static InputImageEntity InsertOrMergeEntity(CloudTable table, InputImageEntity entity)
         {
+            // Create the InsertOrReplace  TableOperation
             TableOperation insertOrMergeOperation = TableOperation.InsertOrMerge(entity);
 
+            // Execute the operation.
             TableResult result = table.Execute(insertOrMergeOperation);
-            ImageProcessJobEntity inserted = result.Result as ImageProcessJobEntity;
-            return inserted;
+            Console.WriteLine(result);
+            InputImageEntity insertedCustomer = result.Result as InputImageEntity;
+            return insertedCustomer;
         }
 
     }

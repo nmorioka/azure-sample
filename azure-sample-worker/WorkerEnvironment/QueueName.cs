@@ -2,7 +2,7 @@
 {
     public class QueueName
     {
-        public const string JOB_QUEUE_NAME = "image-process-job";
+        public const string JOB_QUEUE_NAME = "orders";
     }
 
 }

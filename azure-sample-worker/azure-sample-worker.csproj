@@ -108,6 +108,8 @@
     <Compile Include="Functions.cs" />
     <Compile Include="Models\ImageProcessJobEntity.cs" />
     <Compile Include="Models\ImageProcessJobModel.cs" />
+    <Compile Include="Models\InputImageEntity.cs" />
+    <Compile Include="Models\InputImageModel.cs" />
     <Compile Include="WorkerEnvironment\BlobName.cs" />
     <Compile Include="WorkerEnvironment\QueueName.cs" />
     <Compile Include="Program.cs" />

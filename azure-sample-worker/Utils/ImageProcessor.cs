@@ -12,7 +12,7 @@ namespace Utils
     {
         private static int num = 0;
 
-        public static void execute(Stream input)
+        public static void execute(string id, Stream input)
         {
             string srcFilePath = "";
             string dstFilePath = "";
@@ -56,7 +56,7 @@ namespace Utils
             System.Diagnostics.Process p = System.Diagnostics.Process.Start(psi);
             p.WaitForExit();
 
-            Storage.UploadFileToStream(dstFilePath, "fugafuga.png");
+            Storage.UploadFileToStream(dstFilePath, id);
 
             System.IO.File.Delete(srcFilePath);
             System.IO.File.Delete(dstFilePath);

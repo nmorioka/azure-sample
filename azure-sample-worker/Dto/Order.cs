@@ -2,9 +2,11 @@
 {
     public class Order
     {
-        public string Name { get; set; }
+        public string ImageId { get; set; }
 
         public string OrderId { get; set; }
+
+        public string ProcessId { get; set; }
     }
 
 }
