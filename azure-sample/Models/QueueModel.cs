@@ -2,7 +2,6 @@
 using Microsoft.ServiceBus.Messaging;
 using System.Threading;
 using Microsoft.WindowsAzure.Storage;
-using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 
@@ -27,12 +26,8 @@ namespace Models
         public QueueModel() { }
 
 
-        public static void Initialize()
+        public static void Init(CloudStorageAccount storageAccount)
         {
-
-            // Retrieve storage account information from connection string.
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("StorageConnectionString"));
-
             queueClient = storageAccount.CreateCloudQueueClient();
             queue = queueClient.GetQueueReference("orders");
 

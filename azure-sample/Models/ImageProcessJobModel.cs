@@ -1,5 +1,4 @@
-﻿using Microsoft.Azure;
-using Microsoft.WindowsAzure.Storage;
+﻿using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
 
@@ -13,11 +12,23 @@ namespace Models
         private const string TableName = "imageProcessJob";
         private const string AccountId = "Account1";
 
+        private static CloudStorageAccount cloudStorageAccount;
+
+
+        private ImageProcessJobModel()
+        {
+        }
+
+        public static void Init(CloudStorageAccount account)
+        {
+            cloudStorageAccount = account;
+        }
+
         /// <summary>
         /// Demonstrate basic Table CRUD operations. 
         /// </summary>
         /// <param name="table">The sample table</param>
-        public void Crate(string orderId, string imageId)
+        public static void Crate(string orderId, string imageId)
         {
             // Create or reference an existing table
             CloudTable table = CreateTable();
@@ -33,7 +44,7 @@ namespace Models
             job = InsertOrMergeEntity(table, job);
         }
 
-        public ImageProcessJobEntity Get(string orderId)
+        public static ImageProcessJobEntity Get(string orderId)
         {
             CloudTable table = CreateTable();
 
@@ -44,7 +55,7 @@ namespace Models
             return job;
         }
 
-        public void Update(ImageProcessJobEntity entity)
+        public static void Update(ImageProcessJobEntity entity)
         {
             CloudTable table = CreateTable();
             InsertOrMergeEntity(table, entity);
@@ -54,11 +65,9 @@ namespace Models
         /// Create a table for the sample application to process messages in. 
         /// </summary>
         /// <returns>A CloudTable object</returns>
-        private CloudTable CreateTable()
+        private static CloudTable CreateTable()
         {
-            CloudStorageAccount storageAccount = CreateStorageAccountFromConnectionString(CloudConfigurationManager.GetSetting("StorageConnectionString"));
-
-            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+            CloudTableClient tableClient = cloudStorageAccount.CreateCloudTableClient();
 
             CloudTable table = tableClient.GetTableReference(TableName);
             try
@@ -83,34 +92,6 @@ namespace Models
         }
 
         /// <summary>
-        /// Validate the connection string information in app.config and throws an exception if it looks like 
-        /// the user hasn't updated this to valid values. 
-        /// </summary>
-        /// <param name="storageConnectionString">Connection string for the storage service or the emulator</param>
-        /// <returns>CloudStorageAccount object</returns>
-        private CloudStorageAccount CreateStorageAccountFromConnectionString(string storageConnectionString)
-        {
-            CloudStorageAccount storageAccount;
-            try
-            {
-                storageAccount = CloudStorageAccount.Parse(storageConnectionString);
-            }
-            catch (FormatException)
-            {
-                Console.WriteLine("Invalid storage account information provided. Please confirm the AccountName and AccountKey are valid in the app.config file - then restart the application.");
-                throw;
-            }
-            catch (ArgumentException)
-            {
-                Console.WriteLine("Invalid storage account information provided. Please confirm the AccountName and AccountKey are valid in the app.config file - then restart the sample.");
-                Console.ReadLine();
-                throw;
-            }
-
-            return storageAccount;
-        }
-
-        /// <summary>
         /// The Table Service supports two main types of insert operations. 
         ///  1. Insert - insert a new entity. If an entity already exists with the same PK + RK an exception will be thrown.
         ///  2. Replace - replace an existing entity. Replace an existing entity with a new entity. 
@@ -120,7 +101,7 @@ namespace Models
         /// <param name="table">The sample table name</param>
         /// <param name="entity">The entity to insert or merge</param>
         /// <returns></returns>
-        private ImageProcessJobEntity InsertOrMergeEntity(CloudTable table, ImageProcessJobEntity entity)
+        private static ImageProcessJobEntity InsertOrMergeEntity(CloudTable table, ImageProcessJobEntity entity)
         {
             TableOperation insertOrMergeOperation = TableOperation.InsertOrMerge(entity);
 

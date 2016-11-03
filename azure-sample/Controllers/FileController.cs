@@ -27,10 +27,7 @@ namespace azure_sample.Controllers
         {
             HttpResponseMessage response = Request.CreateResponse();
 
-            // TODO check table
-            InputImageModel imageModel = new InputImageModel();
-            InputImageEntity imageEntry = imageModel.Get(id);
-
+            InputImageEntity imageEntry = InputImageModel.Get(id);
             if (imageEntry == null)
             {
                 return this.Request.CreateResponse(HttpStatusCode.NotFound);
@@ -72,8 +69,7 @@ namespace azure_sample.Controllers
                 // File.Move(file.LocalFileName, Path.Combine("C:\\temp\\", fileName));
                 BlobModel.Upload(imageId, file.LocalFileName);
 
-                InputImageModel inputImageModel = new InputImageModel();
-                inputImageModel.Create(imageId);
+                InputImageModel.Create(imageId);
 
                 list.Add(new InputImageDTO()
                     {
