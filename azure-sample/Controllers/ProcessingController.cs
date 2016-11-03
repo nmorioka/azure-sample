@@ -24,10 +24,12 @@ namespace azure_sample.Controllers
         // GET api/processing/{id}
         public HttpResponseMessage Get(string id)
         {
+            // TODO check job status..
+
             HttpResponseMessage response = Request.CreateResponse();
 
             MemoryStream ms = new MemoryStream();
-            BlobModel.Download(id, ms);
+            BlobModel.DownloadResult(id, ms);
 
             response.Content = new ByteArrayContent(ms.ToArray());
             // only jpeg
