@@ -8,6 +8,12 @@ using System;
 
 namespace azure_sample.Controllers
 {
+    public class ProcessOrderDTO
+    {
+        public string ImageId { get; set; }
+        //public string ProcessId { get; set; }
+    }
+
     public class JobOrderDTO
     {
         public string OrderId { get; set; }
@@ -31,10 +37,10 @@ namespace azure_sample.Controllers
         }
 
         // POST api/processing
-        public async Task<JobOrderDTO> Post([FromUri]string processId = "", [FromUri]string imageId = "")
+        public async Task<JobOrderDTO> Post([FromBody]ProcessOrderDTO processOrderDTO)
         {
             InputImageModel inputImageModel = new InputImageModel();
-            InputImageEntity imageEntity = inputImageModel.Get(imageId);
+            InputImageEntity imageEntity = inputImageModel.Get(processOrderDTO.ImageId);
 
             if (imageEntity == null)
             {
@@ -49,7 +55,7 @@ namespace azure_sample.Controllers
             imageProcessJobModel.Crate(orderId, imageEntity.RowKey);
 
             // send job
-            QueueModel.SendMessage(imageId, processId);
+            QueueModel.SendMessage(orderId, processOrderDTO.ImageId, "default");
 
             return new JobOrderDTO() { OrderId = orderId};
         }

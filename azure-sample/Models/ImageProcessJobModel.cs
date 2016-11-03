@@ -26,8 +26,8 @@ namespace Models
             {
                 Status = "REQUEST",
                 ImageId = imageId,
-                CreateTime = new DateTime(),
-                UpdateTime = new DateTime()
+                CreateTime = DateTime.Now,
+                UpdateTime = DateTime.Now
             };
 
             job = InsertOrMergeEntity(table, job);

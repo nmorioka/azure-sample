@@ -13,6 +13,8 @@ namespace Models
         public string ImageId { get; set; }
 
         public string OrderId { get; set; }
+
+        public string ProcessId { get; set; }
     }
 
     public class QueueModel
@@ -32,23 +34,18 @@ namespace Models
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("StorageConnectionString"));
 
             queueClient = storageAccount.CreateCloudQueueClient();
-            queue = queueClient.GetQueueReference("initialorder");
+            queue = queueClient.GetQueueReference("orders");
 
             queue.CreateIfNotExists();
         }
 
-        public static void SendMessage(string imageId, string orderId)
+        public static void SendMessage(string orderId, string imageId, string processId)
         {
-            // List<BrokeredMessage> messageList = new List<BrokeredMessage>();
-
-            // messageList.Add(CreateSampleMessage("1", "First message information"));
-            // messageList.Add(CreateSampleMessage("2", "Second message information"));
-            // messageList.Add(CreateSampleMessage("3", "Third message information"));
-
             var message = new Order()
             {
+                OrderId = orderId,
                 ImageId = imageId,
-                OrderId = orderId
+                ProcessId = processId
             };
 
             while (true)
