@@ -68,7 +68,7 @@ namespace azure_sample_worker
 
             Console.WriteLine("Waiting queue. run and block..");
             JobHostConfiguration config = new JobHostConfiguration();
-            config.Queues.MaxPollingInterval = TimeSpan.FromMilliseconds(200);
+            config.Queues.MaxPollingInterval = TimeSpan.FromMilliseconds(500);
             JobHost host = new JobHost(config);
             host.RunAndBlock();
         }

@@ -15,6 +15,16 @@ namespace Utils
         public static void Init(CloudStorageAccount account)
         {
             cloudStorageAccount = account;
+
+            try
+            {
+                Directory.CreateDirectory(ProcessorPath.srcDirPath);
+                Directory.CreateDirectory(ProcessorPath.dstDirPath);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
         }
 
         private static bool DownLoadDirectory(IEnumerable<IListBlobItem> list, string DLDir)
@@ -71,9 +81,6 @@ namespace Utils
 
                 Directory.CreateDirectory(ProcessorPath.binPath);
                 DownLoadDirectory(container.ListBlobs(), ProcessorPath.binPath);
-
-                Directory.CreateDirectory(ProcessorPath.srcDirPath);
-                Directory.CreateDirectory(ProcessorPath.dstDirPath);
             }
             catch (Exception e)
             {
