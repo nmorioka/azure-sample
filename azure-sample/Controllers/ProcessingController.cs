@@ -22,20 +22,10 @@ namespace azure_sample.Controllers
     public class ProcessingController : ApiController
     {
         // GET api/processing/{id}
-        public HttpResponseMessage Get(string id)
+        public ImageProcessJobEntity Get(string id)
         {
             // TODO check job status..
-
-            HttpResponseMessage response = Request.CreateResponse();
-
-            MemoryStream ms = new MemoryStream();
-            BlobModel.DownloadResult(id, ms);
-
-            response.Content = new ByteArrayContent(ms.ToArray());
-            // only jpeg
-            response.Content.Headers.TryAddWithoutValidation("Content-Type", "image/jpeg");
-
-            return response;
+            return ImageProcessJobModel.Get(id);
         }
 
         // POST api/processing

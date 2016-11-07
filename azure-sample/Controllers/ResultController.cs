@@ -22,7 +22,7 @@ namespace azure_sample.Controllers
 
             response.Content = new ByteArrayContent(ms.ToArray());
             // only jpeg
-            response.Content.Headers.TryAddWithoutValidation("Content-Type", "image/jpeg");
+            response.Content.Headers.TryAddWithoutValidation("Content-Type", "image/png");
 
             return response;
         }
